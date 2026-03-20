@@ -57,6 +57,6 @@ The Next.js frontend will start. By default, it runs on `http://localhost:3000`.
 
 **3. Open The App!**
 
-You can now access the Git Time Machine by opening your web browser and navigating to:
+You can now access the ULTRASTACK by opening your web browser and navigating to:
 
 [**http://localhost:3000**](http://localhost:3000)
