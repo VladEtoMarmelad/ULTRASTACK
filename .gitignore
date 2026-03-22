@@ -9,10 +9,10 @@
 !.yarn/versions
 
 # --- Build & Compiled Output ---
-/dist
-/build
-/out
-/.next/
+dist/
+build/
+out/
+.next/
 *.tsbuildinfo
 next-env.d.ts
 
@@ -27,8 +27,8 @@ lerna-debug.log*
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # --- Testing ---
-/coverage
-/.nyc_output
+coverage/
+.nyc_output/
 
 # --- Environment & Secrets (Crucial!) ---
 .env
@@ -38,7 +38,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # --- IDEs & Editors ---
 .DS_Store
-/.idea
+.idea/
 .project
 .classpath
 .c9/
