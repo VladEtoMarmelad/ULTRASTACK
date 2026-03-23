@@ -1,7 +1,7 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getAllTechMetadata, getTechContent } from "@/utils/mdx";
 import { redirect } from "next/navigation";
-import TechSelector from "@/components/TechSelector";
+import { TechSelector, CustomLink } from "@/components/index";
 
 const mdxComponents = {
   h1: (props: any) => (
@@ -10,6 +10,7 @@ const mdxComponents = {
   p: (props: any) => (
     <p {...props} className="w-full text-lg leading-8 text-zinc-600 dark:text-zinc-400" />
   ),
+  a: CustomLink,
   // You can add other components here, such as buttons.
 };
 
@@ -36,12 +37,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
       <main className="flex flex-1 w-full flex-col items-stretch justify-between py-32 px-16 bg-white dark:bg-black">
         <div className="flex flex-col items-start gap-6 text-left w-full">
           <MDXRemote source={techData.content} components={mdxComponents} />
-        </div>
-
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row mt-12">
-           <a className="flex h-12 items-center justify-center rounded-full bg-black text-white px-8 dark:bg-white dark:text-black" href="#">
-             Get Started
-           </a>
         </div>
       </main>
     </div>

@@ -1,19 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { TechMetadata } from "@/types/TechMetadata";
 
-interface TechMetadata {
-  id: string;
-  name: string;
+interface TechSelectorProps {
+  allTech: TechMetadata[];
+  currentId: string
 }
 
-export default function TechSelector({ 
-  allTech, 
-  currentId 
-}: { 
-  allTech: TechMetadata[], 
-  currentId: string 
-}) {
+export const TechSelector = ({ allTech, currentId }: TechSelectorProps) => {
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
