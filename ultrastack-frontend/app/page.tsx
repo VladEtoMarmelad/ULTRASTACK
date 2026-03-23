@@ -1,18 +1,7 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getAllTechMetadata, getTechContent } from "@/utils/mdx";
 import { redirect } from "next/navigation";
-import { TechSelector, CustomLink } from "@/components/index";
-
-const mdxComponents = {
-  h1: (props: any) => (
-    <h1 {...props} className="w-full text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50" />
-  ),
-  p: (props: any) => (
-    <p {...props} className="w-full text-lg leading-8 text-zinc-600 dark:text-zinc-400" />
-  ),
-  a: CustomLink,
-  // You can add other components here, such as buttons.
-};
+import { TechSelector, mdxComponents } from "@/components/index";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ tech?: string }> }) {
   const params = await searchParams;
