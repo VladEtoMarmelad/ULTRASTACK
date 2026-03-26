@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "axios": "^1.13.6",
     "gray-matter": "^4.0.3",
     "next": "16.2.0",
     "next-mdx-remote": "^6.0.0",
