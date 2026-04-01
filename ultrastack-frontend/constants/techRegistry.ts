@@ -1,4 +1,4 @@
-import { NextjsTech, NextNavigationTech } from "@/components/techPages";
+import { MongodbTech, NextjsTech, NextNavigationTech } from "@/components/techPages";
 
 // Serializable metadata to be passed to Client Components like TechSelector.
 
@@ -12,6 +12,11 @@ export const TECH_METADATA = [
     id: "nextNavigation",
     name: "Next Navigation",
     description: "Example of using Nextjs Navigation to navigate between pages",
+  },
+  {
+    id: "mongodb",
+    name: "MongoDB API",
+    description: "Example of fetching data from a MongoDB(NoSQL) API with various HTTP methods",
   }
 ];
 
@@ -22,6 +27,7 @@ export const TECH_METADATA = [
 const COMPONENT_MAP: Record<string, React.ComponentType> = {
   nextjs: NextjsTech,
   nextNavigation: NextNavigationTech,
+  mongodb: MongodbTech
 };
 
 export const getAllTechMetadata = async () => TECH_METADATA;
