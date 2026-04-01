@@ -1,6 +1,6 @@
 import { getAllTechMetadata, getTechContent } from "@/constants/techRegistry";
 import { redirect } from "next/navigation";
-import { TechSelector } from "@/components/index";
+import { TechSelector, TechUI } from "@/components/index";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ tech?: string }> }) {
   const params = await searchParams;
@@ -30,6 +30,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
 
       <main className="flex flex-1 w-full flex-col items-stretch justify-between py-32 px-16 bg-white dark:bg-black">
         <div className="flex flex-col items-start gap-6 text-left w-full">
+          <TechUI.H1>{techData.description}</TechUI.H1>
           <ContentComponent />
         </div>
       </main>
