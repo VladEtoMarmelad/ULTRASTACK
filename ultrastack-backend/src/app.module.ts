@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongodbModule } from './mongodb/mongodb.module';
+import { PostgresdbModule } from './postgresdb/postgresdb.module';
 
 @Module({
   imports: [
@@ -9,6 +10,7 @@ import { MongodbModule } from './mongodb/mongodb.module';
       envFilePath: '.env', 
     }),
     MongodbModule,
+    PostgresdbModule,
   ],
   controllers: [],
   providers: [],
