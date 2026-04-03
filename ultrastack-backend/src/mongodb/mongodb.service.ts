@@ -4,17 +4,17 @@ import { MongoClient, Db, Collection, ObjectId } from 'mongodb';
 
 @Injectable()
 export class MongodbService implements OnModuleInit, OnModuleDestroy {
-  private client: MongoClient;
-  private db: Db;
+  private client!: MongoClient;
+  private db!: Db;
 
   constructor(private readonly configService: ConfigService) {}
 
   // Lifecycle hook: connects to MongoDB when the module initializes
   async onModuleInit() {
-    const user = this.configService.get<string>('DB_USER');
-    const password = this.configService.get<string>('DB_PASSWORD');
-    const dbName = this.configService.get<string>('DB_NAME');
-    
+    const user = this.configService.get<string>('MONGODB_USER');
+    const password = this.configService.get<string>('MONGODB_PASSWORD');
+    const dbName = this.configService.get<string>('MONGODB_NAME');
+
     // Constructing MongoDB Atlas connection string
     // Note: Ensure your environment also provides the cluster URL if it's not part of the logic
     const uri = `mongodb+srv://${user}:${password}@cluster0.j3o0frw.mongodb.net/?appName=Cluster0`
