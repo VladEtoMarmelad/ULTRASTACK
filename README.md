@@ -13,7 +13,11 @@ cd ultrastack-backend
 npm install
 ```
 
-**2. Install Frontend Dependencies**
+**2. Setup Environment Variables**
+
+The backend requires environment variables to function correctly. Copy the `.env.example` file in the backend directory to a new file named `.env` and update the values as needed.
+
+**3. Install Frontend Dependencies**
 
 From the project root, navigate to the frontend directory and install its packages.
 
