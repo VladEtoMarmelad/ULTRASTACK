@@ -1,4 +1,4 @@
-import { MongodbTech, NextjsTech, NextNavigationTech, PostgresdbTech } from "@/components/techPages";
+import { MongodbTech, NextjsTech, NextNavigationTech, PostgresdbTech, WebsocketTech } from "@/components/techPages";
 
 // Serializable metadata to be passed to Client Components like TechSelector.
 
@@ -23,6 +23,11 @@ export const TECH_METADATA = [
     name: "PostgreSQL API",
     description: "Example of fetching data from a PostgreSQL(SQL) API with various HTTP methods",
   },
+  {
+    id: "websocket",
+    name: "WebSocket",
+    description: "Example of real-time data streaming using WebSockets",
+  },
 ];
 
 /**
@@ -34,6 +39,7 @@ const COMPONENT_MAP: Record<string, React.ComponentType> = {
   nextNavigation: NextNavigationTech,
   mongodb: MongodbTech,
   postgresdb: PostgresdbTech,
+  websocket: WebsocketTech,
 };
 
 export const getAllTechMetadata = async () => TECH_METADATA;
