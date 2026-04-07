@@ -1,4 +1,8 @@
-import { MongodbTech, NextjsTech, NextNavigationTech, PostgresdbTech, WebsocketTech } from "@/components/techPages";
+import { 
+  MongodbTech, NextjsTech, NextNavigationTech, 
+  PostgresdbTech, WebsocketTech, ReduxTech,
+} from "@/components/techPages";
+import { ReduxTechProvider } from "@/components/techPages/ReduxTech";
 
 // Serializable metadata to be passed to Client Components like TechSelector.
 
@@ -28,6 +32,11 @@ export const TECH_METADATA = [
     name: "WebSocket",
     description: "Example of real-time data streaming using WebSockets",
   },
+  {
+    id: "redux",
+    name: "Redux Toolkit",
+    description: "Example of global state management and async logic with Redux Toolkit",
+  },
 ];
 
 /**
@@ -40,6 +49,7 @@ const COMPONENT_MAP: Record<string, React.ComponentType> = {
   mongodb: MongodbTech,
   postgresdb: PostgresdbTech,
   websocket: WebsocketTech,
+  redux: ReduxTechProvider,
 };
 
 export const getAllTechMetadata = async () => TECH_METADATA;
