@@ -3,4 +3,5 @@ export { NextNavigationTech } from "./NextNavigationTech";
 export { MongodbTech } from "./MongodbTech";
 export { PostgresdbTech } from "./PostgresdbTech";
 export { WebsocketTech } from "./WebsocketTech";
-export { ReduxTech } from "./ReduxTech";
+export { ReduxTech, ReduxTechProvider } from "./ReduxTech";
+export { GraphqlTech, GraphqlTechProvider } from "./GraphqlTech";

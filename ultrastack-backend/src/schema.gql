@@ -1,0 +1,31 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateItemInput {
+  description: String
+  name: String!
+}
+
+type Item {
+  description: String
+  id: ID!
+  name: String!
+}
+
+type Mutation {
+  createItem(createItemInput: CreateItemInput!): Item!
+  removeItem(id: ID!): Boolean!
+  updateItem(updateItemInput: UpdateItemInput!): Item!
+}
+
+type Query {
+  item(id: ID!): Item
+  items: [Item!]!
+}
+
+input UpdateItemInput {
+  description: String
+  id: ID!
+  name: String
+}

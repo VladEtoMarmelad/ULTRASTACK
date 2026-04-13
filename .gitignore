@@ -61,3 +61,6 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+# JSON data files
+items.json
