@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { DocumentNode, gql } from "@apollo/client";
+import { DocumentNode, gql, WatchQueryFetchPolicy, MutationUpdaterFunction } from "@apollo/client";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { ApiField } from "./ApiData";
 
@@ -18,13 +18,24 @@ export const GraphqlApiData = ({
    * Optional array of queries to refetch after a successful mutation.
    * This ensures the UI stays in sync with server-side changes.
    */
-  refetchQueries = []
+  refetchQueries = [],
+  /**
+   * Defines how the query interacts with the Apollo cache.
+   * "network-only" helps prevent seeing stale/deleted data.
+   */
+  fetchPolicy,
+  /**
+   * Manual cache update function, useful for evicting deleted items.
+   */
+  update
 }: { 
   query?: DocumentNode; 
   mutation?: DocumentNode;
   fields?: ApiField[];
   operationName?: string;
   refetchQueries?: any[];
+  fetchPolicy?: WatchQueryFetchPolicy;
+  update?: MutationUpdaterFunction<any, any, any>;
 }) => {
   const [values, setValues] = useState<Record<string, any>>({});
   
@@ -32,8 +43,12 @@ export const GraphqlApiData = ({
    * Hooks must be called unconditionally. 
    * We provide a fallback NOOP document if the specific operation is not requested.
   */
-  const [execQuery, queryStatus] = useLazyQuery(query || NOOP_QUERY);
-  const [execMutation, mutationStatus] = useMutation(mutation || NOOP_MUTATION);
+  const [execQuery, queryStatus] = useLazyQuery(query || NOOP_QUERY, {
+    fetchPolicy: fetchPolicy
+  });
+  const [execMutation, mutationStatus] = useMutation(mutation || NOOP_MUTATION, {
+    update: update
+  });
 
   const loading = queryStatus.loading || mutationStatus.loading;
   const error = queryStatus.error || mutationStatus.error;
