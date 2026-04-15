@@ -2,72 +2,9 @@
 
 import { TechUI } from "../TechUI";
 import { GraphqlApiData } from "../GraphqlApiData";
-import { ApolloClient, gql, HttpLink, InMemoryCache } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
-
-/**
- * GraphQL Fragments allow for reusable field selections across different operations.
- */
-const ITEM_FIELDS = gql`
-  fragment ItemFields on Item {
-    id
-    name
-    description
-  }
-`;
-
-const GET_ITEMS = gql`
-  query GetItems {
-    items {
-      ...ItemFields
-    }
-  }
-  ${ITEM_FIELDS}
-`;
-
-const GET_ITEM = gql`
-  query GetItem($id: ID!) {
-    item(id: $id) { 
-      ...ItemFields
-    }
-  }
-  ${ITEM_FIELDS}
-`;
-
-const CREATE_ITEM = gql`
-  mutation CreateItem($name: String!, $description: String!) {
-    createItem(createItemInput: { name: $name, description: $description }) {
-      ...ItemFields
-    }
-  }
-  ${ITEM_FIELDS}
-`;
-
-/**
- * Updated $id type to ID! to support large integer values (like timestamps) 
- * that exceed the 32-bit limit of the standard Int type.
- */
-const UPDATE_ITEM = gql`
-  mutation UpdateItem($id: ID!, $name: String) {
-    updateItem(updateItemInput: { id: $id, name: $name }) {
-      ...ItemFields
-    }
-  }
-  ${ITEM_FIELDS}
-`;
-
-const REMOVE_ITEM = gql`
-  mutation RemoveItem($id: ID!) {
-    removeItem(id: $id)
-  }
-`;
-
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: new HttpLink({
-    uri: "http://localhost:3030/graphql",
-  }),
-});
+import { GET_ITEMS, GET_ITEM, CREATE_ITEM, UPDATE_ITEM, REMOVE_ITEM } from "@/constants/graphqlOperations";
+import { client } from "@/lib/apolloClient";
 
 export const GraphqlTechProvider = () => {
   return (
