@@ -25,6 +25,15 @@ const GET_ITEMS = gql`
   ${ITEM_FIELDS}
 `;
 
+const GET_ITEM = gql`
+  query GetItem($id: ID!) {
+    item(id: $id) { 
+      ...ItemFields
+    }
+  }
+  ${ITEM_FIELDS}
+`;
+
 const CREATE_ITEM = gql`
   mutation CreateItem($name: String!, $description: String!) {
     createItem(createItemInput: { name: $name, description: $description }) {
@@ -81,6 +90,24 @@ export const GraphqlTech = () => (
       operationName="Run Query: getItems" 
     />
 
+    <TechUI.H3>Query: Get Single Item</TechUI.H3>
+    <GraphqlApiData 
+      query={GET_ITEM} 
+      operationName="Run Query: getItem" 
+      /**
+       * fetchPolicy: "network-only" ensures we bypass the cache when looking for 
+       * a specific item, preventing us from finding items that were deleted on the server.
+       */
+      fetchPolicy="network-only"
+      fields={[
+        /**
+         * Changed type to "text" because GraphQL ID types are sent as strings 
+         * to avoid precision loss with large numbers.
+         */
+        { key: "id", label: "Item ID", type: "text", location: "body" }
+      ]}
+    />
+
     <TechUI.H3>Mutation: Create New Item</TechUI.H3>
     <GraphqlApiData 
       mutation={CREATE_ITEM}
@@ -103,7 +130,7 @@ export const GraphqlTech = () => (
       /**
        * Ensure the item list is updated in case item names changed.
        */
-      refetchQueries={[{ query: GET_ITEMS }]}
+      refetchQueries={[{ query: GET_ITEMS }, { query: GET_ITEM }]} 
       fields={[
         /**
          * Changed type to "text" because GraphQL ID types are sent as strings 
@@ -121,7 +148,18 @@ export const GraphqlTech = () => (
       /**
        * Ensure the item list is updated in case item names changed.
        */
-      refetchQueries={[{ query: GET_ITEMS }]}
+      refetchQueries={[{ query: GET_ITEMS }]} 
+      /**
+       * The update function allows us to manually manipulate the cache.
+       * cache.evict removes the object from the normalized cache entirely.
+       */
+      update={(cache, { data }, { variables }) => {
+        if (data?.removeItem) {
+          const normalizedId = cache.identify({ __typename: "Item", id: variables?.id });
+          cache.evict({ id: normalizedId });
+          cache.gc(); // Garbage collect to clean up orphaned references
+        }
+      }}
       fields={[
         /**
          * Changed type to "text" because GraphQL ID types are sent as strings 
