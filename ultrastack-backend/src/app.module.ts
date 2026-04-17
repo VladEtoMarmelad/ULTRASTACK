@@ -8,6 +8,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { GraphqlService } from './graphql/graphql.service';
 import { GraphqlResolver } from './graphql/graphql.resolver';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { GraphqlResolver } from './graphql/graphql.resolver';
       sortSchema: true,
       playground: true, // Enables GraphQL Playground at http://localhost:3030/graphql
     }),
+    StorageModule,
   ],
   controllers: [],
   providers: [GraphqlService, GraphqlResolver],
