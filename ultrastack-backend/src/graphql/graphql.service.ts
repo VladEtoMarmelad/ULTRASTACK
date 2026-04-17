@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import * as fs from 'fs';
+import { StorageService } from '../storage/storage.service'; 
 import * as path from 'path';
 
 /**
@@ -14,9 +14,9 @@ export interface IGraphqlItem {
 @Injectable()
 export class GraphqlService {
   // Define the path to the JSON file in the project root directory
-  private readonly filePath = path.join(`${process.cwd()}/src/graphql`, 'items.json');
+  private readonly filePath = path.join(process.cwd(), 'src/graphql', 'items.json');
 
-  constructor() {
+  constructor(private readonly storageService: StorageService) {
     // Ensure the data file exists upon service initialization
     this.initializeStorage();
   }
@@ -25,28 +25,27 @@ export class GraphqlService {
    * Checks if the JSON file exists; if not, creates it with initial seed data.
    */
   private initializeStorage(): void {
-    if (!fs.existsSync(this.filePath)) {
-      const initialData: IGraphqlItem[] = [
-        { id: 1, name: 'Initial Item', description: 'Code-first GraphQL resource' }
-      ];
-      // Create the file with formatting for readability
-      fs.writeFileSync(this.filePath, JSON.stringify(initialData, null, 2), 'utf-8');
-    }
+    const initialData: IGraphqlItem[] = [
+      { id: 1, name: 'Initial Item', description: 'Code-first GraphQL resource' }
+    ];
+    /**
+     * Use the external service to handle file existence and directory creation.
+     */
+    this.storageService.ensureFileExists(this.filePath, initialData);
   }
 
   /**
    * Reads and parses data from the JSON file.
    */
   private readItems(): IGraphqlItem[] {
-    const data = fs.readFileSync(this.filePath, 'utf-8');
-    return JSON.parse(data);
+    return this.storageService.readJson<IGraphqlItem[]>(this.filePath);
   }
 
   /**
    * Serializes and saves data to the JSON file.
    */
   private writeItems(items: IGraphqlItem[]): void {
-    fs.writeFileSync(this.filePath, JSON.stringify(items, null, 2), 'utf-8');
+    this.storageService.writeJson(this.filePath, items);
   }
 
   findAll(): IGraphqlItem[] {
