@@ -1,7 +1,7 @@
 import { 
   MongodbTech, NextjsTech, NextNavigationTech, 
   PostgresdbTech, WebsocketTech, ReduxTechProvider, 
-  GraphqlTechProvider
+  GraphqlTechProvider, AuthTech
 } from "@/components/techPages";
 
 // Serializable metadata to be passed to Client Components like TechSelector.
@@ -42,6 +42,11 @@ export const TECH_METADATA = [
     name: "GraphQL & Apollo",
     description: "Example of type-safe API interactions using Apollo Client hooks and fragments",
   },
+  {
+    id: "auth",
+    name: "Authentication & OAuth",
+    description: "Example of secure user authentication and external provider integration",
+  },
 ];
 
 /**
@@ -56,6 +61,7 @@ const COMPONENT_MAP: Record<string, React.ComponentType> = {
   websocket: WebsocketTech,
   redux: ReduxTechProvider,
   graphql: GraphqlTechProvider,
+  auth: AuthTech,
 };
 
 export const getAllTechMetadata = async () => TECH_METADATA;

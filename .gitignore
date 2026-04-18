@@ -63,4 +63,5 @@ pids
 *.pid.lock
 
 # JSON data files
+users.json
 items.json

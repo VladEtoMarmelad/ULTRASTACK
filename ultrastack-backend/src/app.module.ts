@@ -8,6 +8,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { GraphqlService } from './graphql/graphql.service';
 import { GraphqlResolver } from './graphql/graphql.resolver';
+import { AuthModule } from './authTech/auth/auth.module';
+import { UsersModule } from './authTech/users/users.module';
 import { StorageModule } from './storage/storage.module';
 
 @Module({
@@ -30,6 +32,8 @@ import { StorageModule } from './storage/storage.module';
       playground: true, // Enables GraphQL Playground at http://localhost:3030/graphql
     }),
     StorageModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [GraphqlService, GraphqlResolver],
