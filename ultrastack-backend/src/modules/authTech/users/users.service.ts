@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { StorageService } from '../../storage/storage.service';
-import { User } from '../../types/User';
+import { User } from '../../../types/User';
 import * as path from 'path';
 
 @Injectable()
 export class UsersService {
-  private readonly filePath = path.resolve(process.cwd(), 'src/authTech', 'users.json');
+  private readonly filePath = path.resolve(process.cwd(), 'src/modules/authTech', 'users.json');
 
   constructor(private readonly storageService: StorageService) {
     this.storageService.ensureFileExists<User[]>(this.filePath, []);

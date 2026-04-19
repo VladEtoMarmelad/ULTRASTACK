@@ -14,7 +14,7 @@ export interface IGraphqlItem {
 @Injectable()
 export class GraphqlService {
   // Define the path to the JSON file in the project root directory
-  private readonly filePath = path.join(process.cwd(), 'src/graphql', 'items.json');
+  private readonly filePath = path.join(process.cwd(), 'src/modules/graphql', 'items.json');
 
   constructor(private readonly storageService: StorageService) {
     // Ensure the data file exists upon service initialization

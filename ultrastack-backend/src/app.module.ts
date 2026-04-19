@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongodbModule } from './mongodb/mongodb.module';
-import { PostgresdbModule } from './postgresdb/postgresdb.module';
-import { WebsocketModule } from './websocket/websocket.module';
+import { MongodbModule } from './modules/mongodb/mongodb.module';
+import { PostgresdbModule } from './modules/postgresdb/postgresdb.module';
+import { WebsocketModule } from './modules/websocket/websocket.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { GraphqlService } from './graphql/graphql.service';
-import { GraphqlResolver } from './graphql/graphql.resolver';
-import { AuthModule } from './authTech/auth/auth.module';
-import { UsersModule } from './authTech/users/users.module';
-import { StorageModule } from './storage/storage.module';
+import { GraphqlService } from './modules/graphql/graphql.service';
+import { GraphqlResolver } from './modules/graphql/graphql.resolver';
+import { AuthModule } from './modules/authTech/auth/auth.module';
+import { UsersModule } from './modules/authTech/users/users.module';
+import { StorageModule } from './modules/storage/storage.module';
 
 @Module({
   imports: [

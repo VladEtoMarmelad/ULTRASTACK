@@ -8,7 +8,7 @@ import {
   UseGuards 
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { User } from '../../types/User';
+import { User } from '../../../types/User';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
