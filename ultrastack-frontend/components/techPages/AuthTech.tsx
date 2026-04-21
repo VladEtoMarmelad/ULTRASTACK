@@ -1,5 +1,8 @@
+"use client";
+
 import { AuthDivider } from "../AuthDivider";
 import { TechUI } from "../TechUI";
+import { ValidatedRegistration } from "../ValidatedRegistration";
 
 export const AuthTech = () => (
   // Main container centered on the page with maximum width for better readability
@@ -12,16 +15,10 @@ export const AuthTech = () => (
         <TechUI.P className="text-center mb-6 text-sm">
           Registers a new user by hashing the password on the server side using bcrypt.
         </TechUI.P>
+        
+        {/* We use our new validated component instead of the generic ApiData */}
         {/* Interacts with the @Post('register') endpoint in AuthController */}
-        <TechUI.ApiData
-          endpoint="http://localhost:3030/auth/register"
-          config={{ method: "post" }}
-          fields={[
-            { key: "email", label: "Email Address", placeholder: "user@example.com", location: "body" },
-            { key: "name", label: "Full Name", placeholder: "John Doe", location: "body" },
-            { key: "password", label: "Password", placeholder: "Enter secure password...", type: "password", location: "body" }
-          ]}
-        />
+        <ValidatedRegistration />
       </section>
 
       {/* Visual separator with "or" text and horizontal lines */}
@@ -58,5 +55,5 @@ export const AuthTech = () => (
         </a>
       </section>
     </div>
-  </div>
+  </div> 
 );
