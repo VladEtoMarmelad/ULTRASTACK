@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Pool } from 'pg';
+import { Pool, QueryResultRow } from 'pg';
 
 @Injectable()
 export class PostgresdbService implements OnModuleInit, OnModuleDestroy {
@@ -28,7 +28,7 @@ export class PostgresdbService implements OnModuleInit, OnModuleDestroy {
   }
 
   // Create a new record by dynamically mapping keys to columns
-  async create(table: string, data: any) {
+  async create(table: string, data: Record<string, unknown>): Promise<QueryResultRow> { // Returns the newly inserted row
     const keys = Object.keys(data);
     const values = Object.values(data);
     const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
@@ -44,21 +44,21 @@ export class PostgresdbService implements OnModuleInit, OnModuleDestroy {
   }
 
   // Find all records from the specified table
-  async findAll(table: string) {
+  async findAll(table: string): Promise<QueryResultRow[]> { // Returns an array of database rows
     const query = `SELECT * FROM ${table};`;
     const result = await this.pool.query(query);
     return result.rows;
   }
 
   // Find one record by its ID
-  async findOne(table: string, id: string) {
+  async findOne(table: string, id: string): Promise<QueryResultRow | undefined> { // Returns a single row or undefined if not found
     const query = `SELECT * FROM ${table} WHERE id = $1;`;
     const result = await this.pool.query(query, [id]);
     return result.rows[0];
   }
 
   // Update a record by ID by dynamically building the SET clause
-  async update(table: string, id: string, data: any) {
+  async update(table: string, id: string, data: Record<string, unknown>): Promise<QueryResultRow | undefined> { // Returns the updated row
     const keys = Object.keys(data);
     const values = Object.values(data);
     
@@ -77,7 +77,7 @@ export class PostgresdbService implements OnModuleInit, OnModuleDestroy {
   }
 
   // Delete a record by ID
-  async remove(table: string, id: string) {
+  async remove(table: string, id: string): Promise<QueryResultRow | undefined> { // Returns the row that was deleted
     const query = `DELETE FROM ${table} WHERE id = $1 RETURNING *;`;
     const result = await this.pool.query(query, [id]);
     return result.rows[0];

@@ -11,14 +11,18 @@ const registrationSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
+// Infer the TypeScript type from the Zod schema
+type RegistrationValues = z.infer<typeof registrationSchema>;
+
 // Specialized component that mimics ApiData but includes validation
 export const ValidatedRegistration = () => {
-  const [values, setValues] = useState({ email: "", name: "", password: "" });
+  const [values, setValues] = useState<RegistrationValues>({ email: "", name: "", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [data, setData] = useState<any>(null);
+  // Stores the API response or error object for display
+  const [data, setData] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (key: string, value: string) => {
+  const handleInputChange = (key: keyof RegistrationValues, value: string) => {
     setValues((prev) => ({ ...prev, [key]: value }));
     // Clear error when user starts typing again
     if (errors[key]) setErrors((prev) => ({ ...prev, [key]: "" }));
@@ -41,11 +45,22 @@ export const ValidatedRegistration = () => {
     setLoading(true);
     setErrors({});
     try {
-      const res = await axios.post("http://localhost:3030/auth/register", values);
+      const res = await axios.post<Record<string, unknown>>("http://localhost:3030/auth/register", values);
       setData(res.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Fetch error:", err);
-      setData({ error: err.response?.data?.message || "Failed to register" });
+      
+      let errorMessage = "Failed to register";
+      
+      // Safely extract the message from Axios error response
+      if (axios.isAxiosError(err)) {
+        const errorData = err.response?.data as Record<string, unknown> | undefined;
+        if (typeof errorData?.message === 'string') {
+          errorMessage = errorData.message;
+        }
+      }
+
+      setData({ error: errorMessage });
     } finally {
       setLoading(false);
     }

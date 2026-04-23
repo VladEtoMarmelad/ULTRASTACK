@@ -1,6 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-github2';
+import { Strategy, Profile } from 'passport-github2';
 import { Injectable } from '@nestjs/common';
+import { GithubUser } from '../../types/GithubUser';
 
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
@@ -15,17 +16,23 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
   }
 
   // This method extracts user data from the GitHub profile after successful login
-  async validate(accessToken: string, refreshToken: string, profile: any, done: Function): Promise<any> {
-    const { displayName, username, email, emails, photos } = profile;
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+    done: (err: Error | null, user: GithubUser) => void,
+  ): Promise<GithubUser> {
+    const { displayName, username, emails, photos, id } = profile;
 
-    const user = {
-      email: emails[0].value, // GitHub might return private emails if scoped
-      displayName: displayName || username,
-      photos: photos[0].value,
-      id: profile.id, // The external ID from GitHub
+    const user: GithubUser = {
+      // GitHub might return private emails if scoped
+      email: emails && emails.length > 0 ? emails[0].value : '',
+      displayName: displayName || username || '',
+      photos: photos && photos.length > 0 ? photos[0].value : '',
+      id: id, // The external ID from GitHub
     };
 
-    console.log(user)
     done(null, user);
+    return user;
   }
 }

@@ -2,6 +2,7 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { User } from '../../../types/User';
 import { JwtService } from '@nestjs/jwt';
+import { OAuthProfile } from '../../../types/OAuthProfile';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -32,7 +33,7 @@ export class AuthService {
   /**
    * Generates a JWT access token for the authenticated user.
    */
-  async login(user: any) {
+  async login(user: User) {
     const payload = { email: user.email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload), // Signs the payload to create a JWT
@@ -44,9 +45,11 @@ export class AuthService {
    * Generic logic to handle user data coming from different OAuth providers.
    * If the user doesn't exist, it creates a new record.
    */
-  async validateOAuthUser(profile: any, provider: string) {
+  async validateOAuthUser(profile: OAuthProfile, provider: string): Promise<User> {
     const { id, email, displayName, photos } = profile;
-    const avatarUrl = photos?.[0]?.value;
+    
+    // Resolve avatar URL from string or array of objects depending on strategy implementation
+    const avatarUrl = Array.isArray(photos) ? photos[0]?.value : photos;
 
     let user = this.usersService.findByEmail(email);
 

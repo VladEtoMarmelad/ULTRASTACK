@@ -10,7 +10,7 @@ export class MongodbController {
 
   // Endpoint to create a document in the items collection
   @Post()
-  async create(@Body() data: any) {
+  async create(@Body() data: Record<string, unknown>) { // Accepts a dynamic object from the request body
     // Passes the specific 'items' collection name to the service
     return await this.mongodbService.create(this.collectionName, data);
   }
@@ -33,7 +33,7 @@ export class MongodbController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() data: any,
+    @Body() data: Record<string, unknown>, // Accepts partial object data for updates
   ) {
     // Applies partial updates to a document in the items collection
     return await this.mongodbService.update(this.collectionName, id, data);

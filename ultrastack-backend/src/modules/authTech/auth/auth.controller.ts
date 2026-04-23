@@ -7,9 +7,16 @@ import {
   Res, // Import Response decorator
   UseGuards 
 } from '@nestjs/common';
+import type { Request, Response } from 'express';
+import { OAuthProfile } from '../../../types/OAuthProfile';
 import { AuthService } from './auth.service';
 import { User } from '../../../types/User';
 import { AuthGuard } from '@nestjs/passport';
+
+// Interface to represent the request object populated by Passport strategies
+interface AuthenticatedRequest extends Request {
+  user: OAuthProfile;
+}
 
 @Controller('auth')
 export class AuthController {
@@ -22,13 +29,14 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {
+  async googleAuth(@Req() _req: Request) { // Request parameter typed for consistency
     // Guard redirects to Google's login page.
   }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req, @Res() res) { // Inject Response object
+  async googleAuthRedirect(@Req() req: AuthenticatedRequest, @Res() res: Response) { // Inject Response object
+    // req.user is populated by the GoogleStrategy validate method
     const user = await this.authService.validateOAuthUser(req.user, 'google');
     const { access_token } = await this.authService.login(user);
 
@@ -38,13 +46,14 @@ export class AuthController {
 
   @Get('github')
   @UseGuards(AuthGuard('github'))
-  async githubAuth(@Req() req) {
+  async githubAuth(@Req() _req: Request) { // Request parameter typed for consistency
     // Guard redirects to GitHub's login page.
   }
 
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
-  async githubAuthRedirect(@Req() req, @Res() res) { // Inject Response object
+  async githubAuthRedirect(@Req() req: AuthenticatedRequest, @Res() res: Response) { // Inject Response object
+    // req.user is populated by the GithubStrategy validate method
     const user = await this.authService.validateOAuthUser(req.user, 'github');
     const { access_token } = await this.authService.login(user);
 

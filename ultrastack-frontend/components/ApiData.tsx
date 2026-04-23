@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import axios, { AxiosRequestConfig } from "axios";
-
-// Define the structure for dynamic user inputs
-export interface ApiField {
-  key: string;          // The key name in the JSON body or placeholder in URL
-  label: string;        // Label for the input field
-  placeholder?: string;
-  type?: string;        // input type (text, number, etc.)
-  location: "body" | "url"; // Determines where the data goes
-}
+import { ApiField } from "../types/ApiField";
 
 export const ApiData = ({ 
   endpoint, 
@@ -21,7 +13,7 @@ export const ApiData = ({
   config?: AxiosRequestConfig; 
   fields?: ApiField[];
 }) => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
   // State to store values from input fields
   const [values, setValues] = useState<Record<string, string>>({});

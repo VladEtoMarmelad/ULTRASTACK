@@ -10,7 +10,7 @@ export class PostgresdbController {
 
   // Endpoint to create a record in the items table
   @Post()
-  async create(@Body() data: unknown) {
+  async create(@Body() data: Record<string, unknown>) { // Accepts dynamic key-value pairs for the new row
     // Passes the specific 'items' table name to the service
     return await this.postgresdbService.create(this.tableName, data);
   }
@@ -33,7 +33,7 @@ export class PostgresdbController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() data: unknown,
+    @Body() data: Record<string, unknown>, // Accepts partial data for updating columns
   ) {
     // Applies updates to columns in the items table record
     return await this.postgresdbService.update(this.tableName, id, data);

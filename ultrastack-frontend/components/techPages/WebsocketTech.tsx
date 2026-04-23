@@ -17,11 +17,17 @@ interface Notification {
   timestamp?: string;
 }
 
+// Structure of the response returned by the server on ping
+interface PongResponse {
+  reply: string;
+  receivedData: unknown;
+}
+
 export const WebsocketTech = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [metrics, setMetrics] = useState<ServerMetrics | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [pongResponse, setPongResponse] = useState<any>(null);
+  const [pongResponse, setPongResponse] = useState<PongResponse | null>(null);
   const [roomMessages, setRoomMessages] = useState<string[]>([]);
   
   // Input states
@@ -33,7 +39,7 @@ export const WebsocketTech = () => {
   useEffect(() => {
     // Initialize socket connection to the NestJS gateway
     // Ensure the URL matches your NestJS server port
-    const socket = io('http://localhost:3030');
+    const socket: Socket = io('http://localhost:3030');
     socketRef.current = socket;
 
     socket.on('connect', () => {
@@ -55,7 +61,7 @@ export const WebsocketTech = () => {
     });
 
     // Listen for responses to the 'ping' event
-    socket.on('pong', (data: any) => {
+    socket.on('pong', (data: PongResponse) => {
       setPongResponse(data);
     });
 

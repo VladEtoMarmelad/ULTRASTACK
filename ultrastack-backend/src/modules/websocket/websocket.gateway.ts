@@ -10,6 +10,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
+import { ServerMetrics } from '../../types/ServerMetrics';
+import { NotificationPayload } from '../../types/NotificationPayload';
 
 // Enabled CORS to allow connections from your Next.js frontend
 @WebSocketGateway({
@@ -31,7 +33,7 @@ export class WebsocketGateway
     
     // Simulate real-time data streaming (e.g., server metrics)
     setInterval(() => {
-      const metrics = {
+      const metrics: ServerMetrics = {
         cpu: Math.random() * 100,
         memory: Math.random() * 100,
         timestamp: new Date().toISOString(),
@@ -42,14 +44,16 @@ export class WebsocketGateway
   }
 
   // Handle new client connection
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(client: Socket, ...args: unknown[]) {
     this.logger.log(`Client connected: ${client.id}`);
     
-    // Send a welcome message to the specific client
-    client.emit('notification', {
+    const welcomeMessage: NotificationPayload = {
       type: 'INFO',
       message: 'Welcome to the Real-time Dashboard!',
-    });
+    };
+
+    // Send a welcome message to the specific client
+    client.emit('notification', welcomeMessage);
   }
 
   // Handle client disconnection
@@ -59,7 +63,7 @@ export class WebsocketGateway
 
   // Listen to 'ping' event from client and respond with 'pong'
   @SubscribeMessage('ping')
-  handlePing(@ConnectedSocket() client: Socket, @MessageBody() data: any): void {
+  handlePing(@ConnectedSocket() client: Socket, @MessageBody() data: unknown): void {
     this.logger.log(`Ping received from ${client.id}: ${JSON.stringify(data)}`);
     
     // Reply to the sender only
@@ -71,7 +75,7 @@ export class WebsocketGateway
 
   // Join a specific room (useful for private chats or specific entity updates)
   @SubscribeMessage('join-room')
-  handleJoinRoom(client: Socket, room: string) {
+  handleJoinRoom(client: Socket, room: string): void {
     client.join(room);
     this.logger.log(`Client ${client.id} joined room: ${room}`);
     
@@ -82,16 +86,18 @@ export class WebsocketGateway
   @SubscribeMessage('message-to-room')
   handleMessageToRoom(
     @MessageBody() payload: { room: string; message: string },
-  ) {
+  ): void {
     this.server.to(payload.room).emit('new-room-message', payload.message);
   }
 
   // Global broadcast method to be used from other services
-  sendGlobalNotification(message: string) {
-    this.server.emit('notification', {
+  sendGlobalNotification(message: string): void {
+    const notification: NotificationPayload = {
       type: 'GLOBAL_ALERT',
       message,
       timestamp: new Date().toISOString(),
-    });
+    };
+
+    this.server.emit('notification', notification);
   }
 }

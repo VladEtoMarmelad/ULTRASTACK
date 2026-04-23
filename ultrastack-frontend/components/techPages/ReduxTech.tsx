@@ -69,7 +69,8 @@ export const ReduxTech = () => {
         <div className="mt-4 p-4 border border-zinc-200 dark:border-zinc-800 rounded">
           <TechUI.P>Users found in store: {users.length}</TechUI.P>
           <ul className="list-disc ml-6 text-zinc-600 dark:text-zinc-400">
-            {users.slice(0, 3).map((user: any) => (
+            {/* Type is automatically inferred from the typed Redux state */}
+            {users.slice(0, 3).map((user) => (
               <li key={user.id}>{user.name}</li>
             ))}
           </ul>

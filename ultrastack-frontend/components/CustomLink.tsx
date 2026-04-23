@@ -1,7 +1,10 @@
 import Link from 'next/link';
+import { AnchorHTMLAttributes } from 'react';
 
-export const CustomLink = (props: any) => {
+// Props definition using standard HTML anchor attributes to support both Next.js Link and native <a>
+export const CustomLink = (props: AnchorHTMLAttributes<HTMLAnchorElement>) => {
   const href = props.href;
+  // Checks if the destination is a relative path or an anchor on the current page
   const isInternalLink = href && (href.startsWith('/') || href.startsWith('#'));
 
   if (isInternalLink) {

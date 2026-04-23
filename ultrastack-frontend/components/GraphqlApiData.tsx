@@ -1,9 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { DocumentNode, gql, WatchQueryFetchPolicy, MutationUpdaterFunction } from "@apollo/client";
+import { 
+  DocumentNode, 
+  gql, 
+  WatchQueryFetchPolicy, 
+  MutationUpdaterFunction,
+  InternalRefetchQueriesInclude,
+  InMemoryCache,
+  OperationVariables
+} from "@apollo/client";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
-import { ApiField } from "./ApiData";
+import { ApiField } from "../types/ApiField";
 
 // Empty placeholders to prevent Apollo hooks from crashing when a prop is not provided.
 const NOOP_QUERY = gql`query NoOp { __typename }`;
@@ -33,11 +41,12 @@ export const GraphqlApiData = ({
   mutation?: DocumentNode;
   fields?: ApiField[];
   operationName?: string;
-  refetchQueries?: any[];
+  refetchQueries?: InternalRefetchQueriesInclude; // Type-safe list of queries to re-execute
   fetchPolicy?: WatchQueryFetchPolicy;
-  update?: MutationUpdaterFunction<any, any, any>;
+  update?: MutationUpdaterFunction<Record<string, unknown>, Record<string, unknown>, InMemoryCache>; // Type-safe cache update function
 }) => {
-  const [values, setValues] = useState<Record<string, any>>({});
+  // Store form input values with specific primitive types allowed by GraphQL variables
+  const [values, setValues] = useState<Record<string, string | number>>({});
   
   /**
    * Hooks must be called unconditionally. 
@@ -47,14 +56,14 @@ export const GraphqlApiData = ({
     fetchPolicy: fetchPolicy
   });
   const [execMutation, mutationStatus] = useMutation(mutation || NOOP_MUTATION, {
-    update: update
+    update: update as MutationUpdaterFunction<unknown, OperationVariables, InMemoryCache> | undefined
   });
 
   const loading = queryStatus.loading || mutationStatus.loading;
   const error = queryStatus.error || mutationStatus.error;
   
   // Only display data from the active operation
-  const data = query ? queryStatus.data : mutationStatus.data;
+  const data = (query ? queryStatus.data : mutationStatus.data) as Record<string, unknown> | undefined;
 
   const handleInputChange = (key: string, value: string, type?: string) => {
     const formattedValue = type === "number" ? parseFloat(value) : value;
@@ -113,7 +122,7 @@ export const GraphqlApiData = ({
         </div>
       )}
 
-      {data as unknown as React.ReactNode && (
+      {data && (
         <pre className="mt-4 p-2 bg-black text-green-400 text-xs overflow-auto rounded border border-zinc-700">
           {JSON.stringify(data, null, 2)}
         </pre>

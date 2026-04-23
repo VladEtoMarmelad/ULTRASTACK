@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MongoClient, Db, Collection, ObjectId } from 'mongodb';
+import { MongoClient, Db, Collection, ObjectId, Document, UpdateResult, DeleteResult, InsertOneResult } from 'mongodb';
 
 @Injectable()
 export class MongodbService implements OnModuleInit, OnModuleDestroy {
@@ -30,35 +30,35 @@ export class MongodbService implements OnModuleInit, OnModuleDestroy {
   }
 
   // Helper method to access a specific collection
-  private getCollection(collectionName: string): Collection {
+  private getCollection(collectionName: string): Collection<Document> { // Returns a typed MongoDB collection
     return this.db.collection(collectionName);
   }
 
   // Create a new document
-  async create(collection: string, data: any) {
+  async create(collection: string, data: Document): Promise<InsertOneResult<Document>> { // Returns insertion metadata
     return await this.getCollection(collection).insertOne(data);
   }
 
   // Find all documents in a collection
-  async findAll(collection: string) {
+  async findAll(collection: string): Promise<Document[]> { // Returns an array of database documents
     return await this.getCollection(collection).find().toArray();
   }
 
   // Find one document by its hex string ID
-  async findOne(collection: string, id: string) {
-    return await this.getCollection(collection).findOne({ _id: new ObjectId(id) } as any);
+  async findOne(collection: string, id: string): Promise<Document | null> { // Returns a single document or null if not found
+    return await this.getCollection(collection).findOne({ _id: new ObjectId(id) });
   }
 
   // Update a document by ID using $set operator
-  async update(collection: string, id: string, data: any) {
+  async update(collection: string, id: string, data: Document): Promise<UpdateResult<Document>> { // Returns update metadata
     return await this.getCollection(collection).updateOne(
-      { _id: new ObjectId(id) } as any,
+      { _id: new ObjectId(id) },
       { $set: data }
     );
   }
 
   // Delete a document by ID
-  async remove(collection: string, id: string) {
-    return await this.getCollection(collection).deleteOne({ _id: new ObjectId(id) } as any);
+  async remove(collection: string, id: string): Promise<DeleteResult> { // Returns deletion metadata
+    return await this.getCollection(collection).deleteOne({ _id: new ObjectId(id) });
   }
 }
