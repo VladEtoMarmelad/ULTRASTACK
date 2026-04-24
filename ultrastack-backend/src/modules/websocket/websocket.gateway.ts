@@ -12,6 +12,7 @@ import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { ServerMetrics } from '../../types/ServerMetrics';
 import { NotificationPayload } from '../../types/NotificationPayload';
+import { WebsocketService } from './websocket.service';
 
 // Enabled CORS to allow connections from your Next.js frontend
 @WebSocketGateway({
@@ -27,17 +28,15 @@ export class WebsocketGateway
 
   private logger: Logger = new Logger('WebsocketGateway');
 
+  constructor(private readonly wsService: WebsocketService) {}
+
   // Called after the gateway is initialized
   afterInit(server: Server) {
     this.logger.log('WebSocket Gateway Initialized');
     
     // Simulate real-time data streaming (e.g., server metrics)
     setInterval(() => {
-      const metrics: ServerMetrics = {
-        cpu: Math.random() * 100,
-        memory: Math.random() * 100,
-        timestamp: new Date().toISOString(),
-      };
+      const metrics: ServerMetrics = this.wsService.getServerMetrics();
       // Broadcast to all connected clients
       this.server.emit('server-metrics', metrics);
     }, 3000);
@@ -47,12 +46,11 @@ export class WebsocketGateway
   handleConnection(client: Socket, ...args: unknown[]) {
     this.logger.log(`Client connected: ${client.id}`);
     
-    const welcomeMessage: NotificationPayload = {
-      type: 'INFO',
-      message: 'Welcome to the Real-time Dashboard!',
-    };
+    // Send a welcome message to the specific client using the service logic
+    const welcomeMessage: NotificationPayload = this.wsService.prepareNotification(
+      'Welcome to the Real-time Dashboard!',
+    );
 
-    // Send a welcome message to the specific client
     client.emit('notification', welcomeMessage);
   }
 
@@ -63,7 +61,7 @@ export class WebsocketGateway
 
   // Listen to 'ping' event from client and respond with 'pong'
   @SubscribeMessage('ping')
-  handlePing(@ConnectedSocket() client: Socket, @MessageBody() data: unknown): void {
+  handlePing(@ConnectedSocket() client: Socket, @MessageBody() data: Record<string, unknown>): void {
     this.logger.log(`Ping received from ${client.id}: ${JSON.stringify(data)}`);
     
     // Reply to the sender only
@@ -92,12 +90,7 @@ export class WebsocketGateway
 
   // Global broadcast method to be used from other services
   sendGlobalNotification(message: string): void {
-    const notification: NotificationPayload = {
-      type: 'GLOBAL_ALERT',
-      message,
-      timestamp: new Date().toISOString(),
-    };
-
+    const notification = this.wsService.prepareNotification(message, 'GLOBAL_ALERT');
     this.server.emit('notification', notification);
   }
 }
