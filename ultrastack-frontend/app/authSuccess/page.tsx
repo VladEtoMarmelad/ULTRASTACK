@@ -1,24 +1,29 @@
 "use client";
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // or 'next/navigation' for App Router
+import { useRouter } from 'next/navigation';
 
 export default function AuthSuccess() {
   const router = useRouter();
 
   useEffect(() => {
-    // Get the token from the URL query parameters
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
+    const refreshToken = params.get('refresh_token');
 
-    if (token) {
-      // Store the token in localStorage for subsequent API calls
-      localStorage.setItem('access_token', token);
+    if (token && refreshToken) {
+      // Decode URL-encoded tokens and store them
+      const decodedToken = decodeURIComponent(token);
+      const decodedRefreshToken = decodeURIComponent(refreshToken);
       
-      // Navigate to the dashboard or home page after saving the token
+      
+      localStorage.setItem('access_token', decodedToken);
+      localStorage.setItem('refresh_token', decodedRefreshToken);
+      
       router.push('/'); 
     } else {
-      // Handle error if token is missing
+      console.error('✗ Missing tokens in OAuth callback');
+      console.error('URL:', window.location.href);
       router.push('/login?error=auth_failed');
     }
   }, [router]);
