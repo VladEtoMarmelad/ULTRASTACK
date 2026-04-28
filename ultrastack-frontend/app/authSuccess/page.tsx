@@ -20,7 +20,7 @@ export default function AuthSuccess() {
       localStorage.setItem('access_token', decodedToken);
       localStorage.setItem('refresh_token', decodedRefreshToken);
       
-      router.push('/'); 
+      router.push('/authDemonstrate'); 
     } else {
       console.error('✗ Missing tokens in OAuth callback');
       console.error('URL:', window.location.href);

@@ -54,6 +54,16 @@ export const AuthTech = () => (
           Continue with GitHub
         </a>
       </section>
+
+      {/* Link to auth demonstration page */}
+      <div className="mt-12 flex justify-center">
+        <TechUI.A 
+          href="/authDemonstrate" 
+          className="font-medium text-zinc-950 dark:text-zinc-50 underline decoration-zinc-300 underline-offset-4 hover:decoration-zinc-800 transition-colors"
+        >
+          See Auth Demonstration
+        </TechUI.A>
+      </div>
     </div>
   </div> 
 );
