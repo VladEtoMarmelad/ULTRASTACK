@@ -11,7 +11,7 @@ import {
 import type { Request, Response } from 'express';
 import { OAuthProfile } from '../../../types/OAuthProfile';
 import { AuthService } from './auth.service';
-import { User } from '../../../types/User';
+import { User } from '@sharedTypes/User';
 import { AuthGuard } from '@nestjs/passport';
 
 interface AuthenticatedRequest extends Request {

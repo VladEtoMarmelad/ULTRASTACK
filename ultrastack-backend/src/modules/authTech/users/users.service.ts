@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { StorageService } from '../../storage/storage.service';
-import { User } from '../../../types/User';
+import { User } from '@sharedTypes/User';
 import * as path from 'path';
 
 @Injectable()
